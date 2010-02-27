@@ -4,13 +4,16 @@ require 'cucumber'
 module Cucumber
   module Stepdefs
     module Macros
-      attr_accessor :step_name
+      attr_writer :step_name
 
       def the_step(step_name, &block)
-        # TODO: figure out how to make this work for nested describes - it will only work one deep at the moment
         example_group = block.call
         example_group.step_name = step_name
         example_group
+      end
+
+      def step_name
+        (@step_name || self.superclass.step_name) rescue raise("step name not defined")
       end
     end
 
@@ -49,7 +52,7 @@ module Cucumber
       end
 
       def step_name
-        self.class.step_name or raise("step name not defined")
+        self.class.step_name
       end
     end
   end
