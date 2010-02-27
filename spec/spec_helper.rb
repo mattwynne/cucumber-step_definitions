@@ -13,7 +13,9 @@ module Cucumber
       end
 
       def step_name
-        (@step_name || self.superclass.step_name) rescue raise("step name not defined")
+        return @step_name if @step_name
+        return self.superclass.step_name if self.superclass.respond_to?(:step_name)
+        raise("step name not defined")
       end
     end
 
