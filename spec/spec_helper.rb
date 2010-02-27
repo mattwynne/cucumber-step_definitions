@@ -7,7 +7,7 @@ module Cucumber
       attr_writer :step_name
 
       def the_step(step_name, &block)
-        example_group = block.call
+        example_group = describe(step_name, &block)
         example_group.step_name = step_name
         example_group
       end
