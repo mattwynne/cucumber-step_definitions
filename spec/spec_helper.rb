@@ -1,5 +1,18 @@
 require 'rubygems'
 require 'cucumber'
+require 'cucumber/rb_support/rb_language'
+
+module Cucumber
+  module RbSupport
+    class RbLanguage
+      # HACK: Patch Cucumber replacing require so we always load the step  definitions
+      # TODO: Move step mother outside of example group context
+      def load_code_file(code_file)
+        load File.expand_path(code_file)
+      end
+    end
+  end
+end
 
 module Cucumber
   module Stepdefs
@@ -49,8 +62,8 @@ module Cucumber
         return @step_mother if @step_mother
         @step_mother = ::Cucumber::StepMother.new
         file_to_test = File.expand_path(File.dirname(__FILE__) + '/../lib/cucumber/stepdefs/icalendar.rb')
-        step_mother.load_code_file(file_to_test)
-        step_mother
+        @step_mother.load_code_file(file_to_test)
+        @step_mother
       end
 
       def step_name
