@@ -30,6 +30,11 @@ module Cucumber
         return self.superclass.step_name if self.superclass.respond_to?(:step_name)
         raise("step name not defined")
       end
+      
+      def step_file
+        File.expand_path(File.dirname(__FILE__) + '/../lib/cucumber/stepdefs/icalendar_steps.rb')
+      end
+      
     end
 
     module WorldHelper
@@ -61,8 +66,7 @@ module Cucumber
       def step_mother
         return @step_mother if @step_mother
         @step_mother = ::Cucumber::StepMother.new
-        file_to_test = File.expand_path(File.dirname(__FILE__) + '/../lib/cucumber/stepdefs/icalendar.rb')
-        @step_mother.load_code_file(file_to_test)
+        @step_mother.load_code_file(self.class.step_file)
         @step_mother
       end
 
