@@ -28,27 +28,38 @@ module Cucumber
       def step_name
         return @step_name if @step_name
         return self.superclass.step_name if self.superclass.respond_to?(:step_name)
-        raise("step name not defined")
+        raise("Step name not defined")
       end
-      
+
       def step_file
         File.expand_path(File.dirname(__FILE__) + '/../lib/cucumber/stepdefs/icalendar_steps.rb')
       end
-      
+
     end
 
     module WorldHelper
+      class FakeScenario
+        attr_reader :tags
+
+        def initialize
+          @tags = []
+        end
+
+        def tag!(tag)
+          @tags << tag
+        end
+
+        def language
+          'en'
+        end
+      end
 
       def scenario
-        result = mock('scenario', :language => 'en')
-        result.stub!(:accept_hook?) do |hook|
-          if hook.tag_expressions.include? '@ical'
-            true
-          else
-            false
-          end
+        @scenario ||= FakeScenario.new
+        @scenario.stub!(:accept_hook?) do |hook|
+          hook.tag_expressions.any?{|tag| @scenario.tags.include?(tag)}
         end
-        result
+        @scenario
       end
 
       def world
@@ -66,7 +77,8 @@ module Cucumber
       def step_mother
         return @step_mother if @step_mother
         @step_mother = ::Cucumber::StepMother.new
-        @step_mother.load_code_file(self.class.step_file)
+        step_file = File.expand_path(File.dirname(__FILE__) + '/../lib/cucumber/stepdefs/icalendar_steps.rb')
+        @step_mother.load_code_file(step_file)
         @step_mother
       end
 

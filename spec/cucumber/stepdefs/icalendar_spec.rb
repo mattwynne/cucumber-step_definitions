@@ -27,22 +27,27 @@ EOS
     mock('response', :body => "")
   end
 
-  # describe "an untagged scenario" do
-  #   it "should not mix in any calendar related methods" do
-  #     world.methods.should_not include('response_calendars')
-  #     world.methods.should_not include('response_events')
-  #   end
-  # end
+  def world_methods
+    (world.methods - Object.methods)
+  end
 
-  # describe "a scenario tagged with @ical" do
-  #   before(:each) do
-  #     scenario.tag! "@ical"
-  #   end
-  #
-  #   it "should add the methods response_calendars and response_events to world" do
-  #     world.methods.should include('response_calendars')
-  #     world.methods.should include('response_events')
-  #   end
+  describe "an untagged scenario" do
+    it "should not mix in any calendar related methods" do
+      world_methods.should_not include('response_calendars')
+      world_methods.should_not include('response_events')
+    end
+  end
+
+  describe "a scenario tagged with @ical" do
+    before(:each) do
+      scenario.tag! "@ical"
+    end
+
+    ['response_calendars', 'response_events'].each do |method|
+      it "should add the #{method} to world" do
+        world_methods.should include(method)
+      end
+    end
 
     # Then /^I should be presented with an iCalendar feed containing (\d+) calendars?$/ do |expected_num_calendars|
     the_step "I should be presented with an iCalendar feed containing 1 calendar" do
@@ -67,5 +72,5 @@ EOS
         end
       end
     end
-  # end
+  end
 end
