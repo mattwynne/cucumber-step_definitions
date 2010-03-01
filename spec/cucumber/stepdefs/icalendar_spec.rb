@@ -46,7 +46,7 @@ EOS
 
     # Then /^I should be presented with an iCalendar feed containing (\d+) calendars?$/ do |expected_num_calendars|
     the_step "I should be presented with an iCalendar feed containing 1 calendar" do
-      describe "when 0 events are in the response body" do
+      describe "when 0 calendars are in the response body" do
         before(:each) do
           world.stub!(:response).and_return(mock_response_with_no_calendars)
         end
@@ -57,7 +57,7 @@ EOS
 
       end
 
-      describe "when 1 events are in the response body" do
+      describe "when 1 calendar is in the response body" do
         before(:each) do
           world.stub!(:response).and_return(mock_response_with_1_calendar)
         end
