@@ -56,9 +56,7 @@ module Cucumber
     module WorldHelper
       class FakeScenario
         def initialize(tags)
-          puts "Tags:", tags.inspect, ""
           @tags = tags
-
         end
 
         def accept_hook?(hook)
