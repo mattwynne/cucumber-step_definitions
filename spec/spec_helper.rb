@@ -27,9 +27,13 @@ module Cucumber
       end
 
       def with_tag(tag, &block)
-        example_group = describe("Scenarios tagged with #{tag}", &block)
+        with_tags([tag], &block)
+      end
+
+      def with_tags(tags, &block)
+        example_group = describe("Scenarios tagged with #{tags.inspect}", &block)
         example_group.tags ||= []
-        example_group.tags = (example_group.tags << tag)
+        example_group.tags = tags
         example_group
       end
 
@@ -40,7 +44,7 @@ module Cucumber
       end
 
       def tags
-        if self.superclass.respond_to?(:step_name)
+        if self.superclass.respond_to?(:tags)
           return @tags.nil? ? self.superclass.tags : @tags + self.superclass.tags
         else
           return []
@@ -49,6 +53,10 @@ module Cucumber
 
       def step_file
         File.expand_path(File.dirname(__FILE__) + '/../lib/cucumber/stepdefs/icalendar_steps.rb')
+      end
+
+      private
+      def step_root_example_group?
       end
 
     end
