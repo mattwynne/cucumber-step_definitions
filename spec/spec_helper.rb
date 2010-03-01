@@ -18,6 +18,7 @@ module Cucumber
   module Stepdefs
     module Macros
       attr_writer :step_name
+      attr_writer :tags
 
       def the_step(step_name, &block)
         example_group = describe(step_name, &block)
@@ -25,10 +26,25 @@ module Cucumber
         example_group
       end
 
+      def with_tag(tag, &block)
+        example_group = describe("Scenarios tagged with #{tag}", &block)
+        example_group.tags ||= []
+        example_group.tags = (example_group.tags << tag)
+        example_group
+      end
+
       def step_name
         return @step_name if @step_name
         return self.superclass.step_name if self.superclass.respond_to?(:step_name)
         raise("Step name not defined")
+      end
+
+      def tags
+        if self.superclass.respond_to?(:step_name)
+          return @tags.nil? ? self.superclass.tags : @tags + self.superclass.tags
+        else
+          return []
+        end
       end
 
       def step_file
@@ -39,12 +55,10 @@ module Cucumber
 
     module WorldHelper
       class FakeScenario
-        def initialize
-          @tags = []
-        end
+        def initialize(tags)
+          puts "Tags:", tags.inspect, ""
+          @tags = tags
 
-        def tag!(tag)
-          @tags << tag
         end
 
         def accept_hook?(hook)
@@ -57,7 +71,7 @@ module Cucumber
       end
 
       def scenario
-        @scenario ||= FakeScenario.new
+        @scenario ||= FakeScenario.new(self.class.tags)
       end
 
       def world

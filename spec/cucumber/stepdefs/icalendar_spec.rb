@@ -38,11 +38,7 @@ EOS
     end
   end
 
-  describe "a scenario tagged with @ical" do
-    before(:each) do
-      scenario.tag! "@ical"
-    end
-
+  with_tag '@ical' do
     ['response_calendars', 'response_events'].each do |method|
       it "should add the #{method} to world" do
         world_methods.should include(method)
