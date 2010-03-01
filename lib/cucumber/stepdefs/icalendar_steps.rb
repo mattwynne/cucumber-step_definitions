@@ -20,7 +20,7 @@ Before('@ical') do
 end
 
 Then /^I should be presented with an iCalendar feed containing (\d+) calendars?$/ do |expected_num_calendars|
-  response_calendars.length.should == 1
+  response_calendars.length.should == expected_num_calendars.to_i
 end
 
 Then /^the iCalendar should have exactly (\d+) events?$/ do |number_of_events|
