@@ -9,6 +9,18 @@ X-WR-CALNAME:Songkick: Your Events (josephwilk)
 VERSION:2.0
 CALSCALE:GREGORIAN
 PRODID:-//Songkick//iCal 1.0//EN
+END:VCALENDAR
+EOS
+  end
+
+  def mock_response_with_1_event
+    mock('response', :body => <<-EOS)
+BEGIN:VCALENDAR
+X-PUBLISHED-TTL:PT1H
+X-WR-CALNAME:Songkick: Your Events (josephwilk)
+VERSION:2.0
+CALSCALE:GREGORIAN
+PRODID:-//Songkick//iCal 1.0//EN
 BEGIN:VEVENT
 LOCATION:Roundhouse\, Chalk Farm Road\, NW1 8EH London\, UK
 DTEND:20100313
@@ -45,7 +57,30 @@ EOS
       end
     end
 
-    # Then /^I should be presented with an iCalendar feed containing (\d+) calendars?$/ do |expected_num_calendars|
+    # Then /^the iCalendar should have exactly (\d+) events?$/
+    the_step "the iCalendar should have exactly 1 event" do
+      describe "when 1 calendar with 0 event is in the response body" do
+        before(:each) do
+          world.stub!(:response).and_return(mock_response_with_1_calendar)
+        end
+
+        it "should fail" do
+          lambda { run_step }.should raise_error(Spec::Expectations::ExpectationNotMetError)
+        end
+      end
+
+      describe "when 1 calendar with 1 event is in the response body" do
+        before(:each) do
+          world.stub!(:response).and_return(mock_response_with_1_event)
+        end
+
+        it "should pass" do
+          lambda { run_step }.should_not raise_error
+        end
+      end
+    end
+
+    # Then /^I should be presented with an iCalendar feed containing (\d+) calendars?$/
     the_step "I should be presented with an iCalendar feed containing 1 calendar" do
       describe "when 0 calendars are in the response body" do
         before(:each) do
