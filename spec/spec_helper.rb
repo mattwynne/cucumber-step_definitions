@@ -39,8 +39,6 @@ module Cucumber
 
     module WorldHelper
       class FakeScenario
-        attr_reader :tags
-
         def initialize
           @tags = []
         end
@@ -49,6 +47,10 @@ module Cucumber
           @tags << tag
         end
 
+        def accept_hook?(hook)
+          hook.tag_expressions.any?{|tag| @tags.include?(tag)}
+         end
+
         def language
           'en'
         end
@@ -56,10 +58,6 @@ module Cucumber
 
       def scenario
         @scenario ||= FakeScenario.new
-        @scenario.stub!(:accept_hook?) do |hook|
-          hook.tag_expressions.any?{|tag| @scenario.tags.include?(tag)}
-        end
-        @scenario
       end
 
       def world
