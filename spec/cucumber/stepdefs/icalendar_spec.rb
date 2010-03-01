@@ -64,9 +64,8 @@ EOS
           world.stub!(:response).and_return(mock_response_with_1_calendar)
         end
 
-        it "should fail" do
-          lambda { run_step }.should raise_error(Spec::Expectations::ExpectationNotMetError)
-        end
+        it_should_fail_with(Spec::Expectations::ExpectationNotMetError)
+
       end
 
       describe "when 1 calendar with 1 event is in the response body" do
@@ -74,9 +73,8 @@ EOS
           world.stub!(:response).and_return(mock_response_with_1_event)
         end
 
-        it "should pass" do
-          lambda { run_step }.should_not raise_error
-        end
+        it_should_pass
+
       end
     end
 
@@ -87,9 +85,7 @@ EOS
           world.stub!(:response).and_return(mock_response_with_no_calendars)
         end
 
-        it "should fail" do
-          lambda { run_step }.should raise_error(Spec::Expectations::ExpectationNotMetError)
-        end
+        it_should_fail_with(Spec::Expectations::ExpectationNotMetError)
 
       end
 
@@ -98,9 +94,7 @@ EOS
           world.stub!(:response).and_return(mock_response_with_1_calendar)
         end
 
-        it "should pass" do
-          lambda { run_step }.should_not raise_error
-        end
+        it_should_pass
       end
     end
   end

@@ -55,8 +55,16 @@ module Cucumber
         File.expand_path(File.dirname(__FILE__) + '/../lib/cucumber/stepdefs/icalendar_steps.rb')
       end
 
-      private
-      def step_root_example_group?
+      def it_should_pass
+        it "should pass" do
+          lambda { run_step }.should_not raise_error
+        end
+      end
+
+      def it_should_fail_with(exception)
+        it "should fail" do
+          lambda { run_step }.should raise_error(exception)
+        end
       end
 
     end
