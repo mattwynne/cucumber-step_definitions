@@ -30,6 +30,10 @@ module Cucumber
         with_tags([tag], &block)
       end
 
+      def without_tags(&block)
+        describe("an untagged scenario", &block)
+      end
+
       def with_tags(tags, &block)
         example_group = describe("Scenarios tagged with #{tags.inspect}", &block)
         example_group.tags ||= []
@@ -103,7 +107,7 @@ module Cucumber
       def step_mother
         return @step_mother if @step_mother
         @step_mother = ::Cucumber::StepMother.new
-        step_file = File.expand_path(File.dirname(__FILE__) + '/../lib/cucumber/stepdefs/icalendar_steps.rb')
+        step_file = self.class.step_file
         @step_mother.load_code_file(step_file)
         @step_mother
       end

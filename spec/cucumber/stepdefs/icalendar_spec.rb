@@ -43,7 +43,7 @@ EOS
     (world.methods - Object.methods)
   end
 
-  describe "an untagged scenario" do
+  without_tags do
     it "should not mix in any calendar related methods" do
       world_methods.should_not include('response_calendars')
       world_methods.should_not include('response_events')
