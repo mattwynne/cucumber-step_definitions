@@ -3,25 +3,15 @@ require 'cucumber'
 require 'cucumber/rb_support/rb_language'
 
 module Cucumber
-  module RbSupport
-    class RbLanguage
-      # HACK: Patch Cucumber replacing require so we always load the step  definitions
-      # TODO: Move step mother outside of example group context
-      def load_code_file(code_file)
-        load File.expand_path(code_file)
-      end
-    end
-  end
-end
-
-module Cucumber
   module Stepdefs
     module Macros
-      attr_writer :step_name
-      attr_writer :tags
+      attr_writer :step_name, :tags, :step_mother
 
       def step_file(file)
-        @file = File.expand_path(file + '.rb')
+        file = File.expand_path(file + '.rb')
+        raise "You can only load a step file once." if @step_mother
+        @step_mother = ::Cucumber::StepMother.new
+        @step_mother.load_code_file(file)
       end
 
       def the_step(step_name, &block)
@@ -51,10 +41,9 @@ module Cucumber
         raise("Step name not defined")
       end
 
-      def file
-        return @file if @file
-        return self.superclass.file if self.superclass.respond_to?(:file)
-        raise("You must specify the step_file")
+      def step_mother
+        return @step_mother if @step_mother
+        return self.superclass.step_mother if self.superclass.respond_to?(:step_mother)
       end
 
       def tags
@@ -111,11 +100,7 @@ module Cucumber
       private
 
       def step_mother
-        return @step_mother if @step_mother
-        @step_mother = ::Cucumber::StepMother.new
-        step_file = self.class.file
-        @step_mother.load_code_file(step_file)
-        @step_mother
+        self.class.step_mother
       end
 
       def step_name
