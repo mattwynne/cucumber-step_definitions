@@ -7,7 +7,7 @@ module Cucumber
     LANGUAGE_FILE_EXTENSION = 'rb'
 
     module Macros
-      attr_writer :step_name, :tags, :step_mother
+      attr_writer :step_name, :tags
 
       def step_file(file)
         file = File.expand_path("#{file}.#{LANGUAGE_FILE_EXTENSION}")
