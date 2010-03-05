@@ -4,12 +4,14 @@ require 'cucumber/rb_support/rb_language'
 
 module Cucumber
   module Stepdefs
+    LANGUAGE_FILE_EXTENSION = 'rb'
+
     module Macros
       attr_writer :step_name, :tags, :step_mother
 
       def step_file(file)
-        file = File.expand_path(file + '.rb')
-        raise "You can only load a step file once." if @step_mother
+        file = File.expand_path("#{file}.#{LANGUAGE_FILE_EXTENSION}")
+        raise "You can only load a step file once. '#{file}' has already been loaded." if @step_mother
         @step_mother = ::Cucumber::StepMother.new
         @step_mother.load_code_file(file)
       end
@@ -88,7 +90,7 @@ module Cucumber
       end
 
       def world
-        rb = step_mother.load_programming_language('rb')
+        rb = step_mother.load_programming_language(LANGUAGE_FILE_EXTENSION)
         rb.before(scenario)
         rb.current_world
       end
