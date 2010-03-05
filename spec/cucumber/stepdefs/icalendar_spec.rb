@@ -1,6 +1,8 @@
 require File.expand_path(File.dirname(__FILE__) + '/../../spec_helper')
 
 describe 'icalendar_steps' do
+  step_file File.dirname(__FILE__) + '/../../../lib/cucumber/stepdefs/icalendar_steps'
+
   def mock_response_with_1_calendar
     mock('response', :body => <<-EOS)
 BEGIN:VCALENDAR

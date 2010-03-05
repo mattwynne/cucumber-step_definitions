@@ -20,6 +20,10 @@ module Cucumber
       attr_writer :step_name
       attr_writer :tags
 
+      def step_file(file)
+        @file = File.expand_path(file + '.rb')
+      end
+
       def the_step(step_name, &block)
         example_group = describe(step_name, &block)
         example_group.step_name = step_name
@@ -47,16 +51,18 @@ module Cucumber
         raise("Step name not defined")
       end
 
+      def file
+        return @file if @file
+        return self.superclass.file if self.superclass.respond_to?(:file)
+        raise("You must specify the step_file")
+      end
+
       def tags
         if self.superclass.respond_to?(:tags)
           return @tags.nil? ? self.superclass.tags : @tags + self.superclass.tags
         else
           return []
         end
-      end
-
-      def step_file
-        File.expand_path(File.dirname(__FILE__) + '/../lib/cucumber/stepdefs/icalendar_steps.rb')
       end
 
       def it_should_pass
@@ -107,7 +113,7 @@ module Cucumber
       def step_mother
         return @step_mother if @step_mother
         @step_mother = ::Cucumber::StepMother.new
-        step_file = self.class.step_file
+        step_file = self.class.file
         @step_mother.load_code_file(step_file)
         @step_mother
       end
