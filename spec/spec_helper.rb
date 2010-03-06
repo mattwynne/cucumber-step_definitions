@@ -1,6 +1,5 @@
 require 'rubygems'
 require 'cucumber'
-require 'cucumber/rb_support/rb_language'
 
 module Cucumber
   module Stepdefs
